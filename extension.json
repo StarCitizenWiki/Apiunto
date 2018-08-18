@@ -1,0 +1,62 @@
+{
+	"name": "Apiunto",
+	"version": "1.0.0",
+	"author": [
+		"FoXFTW"
+	],
+	"url": "https://star-citizen.wiki",
+	"descriptionmsg": "apiunto-desc",
+	"license-name": "",
+	"type": "other",
+	"requires": {
+		"MediaWiki": ">= 1.30.0",
+		"extensions": {
+			"Scribunto": "*"
+		}
+	},
+	"MessagesDirs": {
+		"Apiunto": [
+			"i18n"
+		]
+	},
+	"AutoloadClasses": {
+		"MediaWiki\\Extension\\Apiunto\\Hooks": "src/Hooks.php",
+		"MediaWiki\\Extension\\Apiunto\\Scribunto_ApiuntoLuaLibrary": "src/Scribunto_ApiuntoLuaLibrary.php",
+		"MediaWiki\\Extension\\Apiunto\\Repositories\\AbstractRepository": "src/Repositories/AbstractRepository.php",
+
+		"MediaWiki\\Extension\\Apiunto\\Repositories\\Vehicle\\AbstractVehicleRepository": "src/Repositories/Vehicle/AbstractVehicleRepository.php",
+		"MediaWiki\\Extension\\Apiunto\\Repositories\\Vehicle\\ShipRepository": "src/Repositories/Vehicle/ShipRepository.php",
+		"MediaWiki\\Extension\\Apiunto\\Repositories\\Vehicle\\GroundVehicleRepository": "src/Repositories/Vehicle/GroundVehicleRepository.php",
+
+		"MediaWiki\\Extension\\Apiunto\\Repositories\\ManufacturerRepository": "src/Repositories/ManufacturerRepository.php"
+	},
+	"config": {
+		"ApiuntoKey": {
+			"value": null,
+			"description": "Api Key which is added to Requests"
+		},
+		"ApiuntoUrl": {
+			"value": null,
+			"description": "Url to the Api"
+		},
+		"ApiuntoTimeout": {
+			"value": 5,
+			"description": "Request Timeout in Seconds"
+		},
+		"ApiuntoApiVersion": {
+			"value": "v1",
+			"description": "Accepted Version"
+		},
+		"ApiuntoDefaultLocale": {
+			"value": null,
+			"description": "The Locale to return, unset to get all translations"
+		}
+	},
+	"Hooks": {
+		"ScribuntoExternalLibraries": [
+			"MediaWiki\\Extension\\Apiunto\\Hooks::onScribuntoExternalLibraries"
+		]
+	},
+	"load_composer_autoloader": true,
+	"manifest_version": 2
+}
