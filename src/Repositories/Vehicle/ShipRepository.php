@@ -9,5 +9,5 @@ namespace MediaWiki\Extension\Apiunto\Repositories\Vehicle;
 
 class ShipRepository extends AbstractVehicleRepository {
 
-	const API_ENDPOINT = 'api/vehicles/ships';
+	const API_ENDPOINT = 'api/ships';
 }
