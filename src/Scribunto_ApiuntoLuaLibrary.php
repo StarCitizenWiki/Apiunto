@@ -50,6 +50,7 @@ class Scribunto_ApiuntoLuaLibrary extends \Scribunto_LuaLibraryBase {
 			'get_ship' => [ $this, 'getShip' ],
 			'get_ground_vehicle' => [ $this, 'getGroundVehicle' ],
 			'get_manufacturer' => [ $this, 'getManufacturer' ],
+			'get_comm_link_metadata' => [ $this, 'getCommLinkMetadata' ],
 		];
 
 		return $this->getEngine()->registerInterface( __DIR__ . '/mw.ext.Apiunto.lua', $lib, [] );
