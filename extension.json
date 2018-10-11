@@ -28,7 +28,9 @@
 		"MediaWiki\\Extension\\Apiunto\\Repositories\\Vehicle\\ShipRepository": "src/Repositories/Vehicle/ShipRepository.php",
 		"MediaWiki\\Extension\\Apiunto\\Repositories\\Vehicle\\GroundVehicleRepository": "src/Repositories/Vehicle/GroundVehicleRepository.php",
 
-		"MediaWiki\\Extension\\Apiunto\\Repositories\\ManufacturerRepository": "src/Repositories/ManufacturerRepository.php"
+		"MediaWiki\\Extension\\Apiunto\\Repositories\\ManufacturerRepository": "src/Repositories/ManufacturerRepository.php",
+
+		"MediaWiki\\Extension\\Apiunto\\Repositories\\CommLinkRepository": "src/Repositories/CommLinkRepository.php"
 	},
 	"config": {
 		"ApiuntoKey": {
