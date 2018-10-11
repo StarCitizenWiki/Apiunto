@@ -3,6 +3,7 @@
 namespace MediaWiki\Extension\Apiunto;
 
 use GuzzleHttp\Client;
+use MediaWiki\Extension\Apiunto\Repositories\CommLinkRepository;
 use MediaWiki\Extension\Apiunto\Repositories\ManufacturerRepository;
 use MediaWiki\Extension\Apiunto\Repositories\Vehicle\GroundVehicleRepository;
 use MediaWiki\Extension\Apiunto\Repositories\Vehicle\ShipRepository;
@@ -85,6 +86,16 @@ class Scribunto_ApiuntoLuaLibrary extends \Scribunto_LuaLibraryBase {
 		] );
 
 		return [ $repository->getManufacturer() ];
+	}
+
+	public function getCommLinkMetadata() {
+		$params = func_get_args();
+
+		$repository = new CommLinkRepository( static::$client, [
+			self::QUERY => $params[0]
+		] );
+
+		return [ $repository->getCommLinkMetadata() ];
 	}
 
 }

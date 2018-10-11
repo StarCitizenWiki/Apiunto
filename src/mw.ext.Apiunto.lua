@@ -32,6 +32,12 @@ function Apiunto.get_manufacturer(name, locale)
     return php.get_manufacturer(name, locale)
 end
 
+function Apiunto.get_comm_link_metadata(id)
+    libraryUtil.checkType('get_manufacturer', 1, name, 'number', false)
+
+    return php.get_comm_link_metadata(id)
+end
+
 function Apiunto.setupInterface(options)
     -- Boilerplate
     Apiunto.setupInterface = nil
