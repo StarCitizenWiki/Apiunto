@@ -33,7 +33,7 @@ function Apiunto.get_manufacturer(name, locale)
 end
 
 function Apiunto.get_comm_link_metadata(id)
-    libraryUtil.checkType('get_manufacturer', 1, name, 'number', false)
+    libraryUtil.checkType('get_comm_link_metadata', 1, name, 'number', false)
 
     return php.get_comm_link_metadata(id)
 end
