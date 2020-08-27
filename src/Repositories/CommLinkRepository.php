@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types = 1);
 
 namespace MediaWiki\Extension\Apiunto\Repositories;
 
@@ -6,19 +6,19 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 
 /**
- * Star Citizen Manufacturer data
+ * Star Citizen Comm-Link metadata
  */
-class ManufacturerRepository extends AbstractRepository
+class CommLinkRepository extends AbstractRepository
 {
-    const API_ENDPOINT = 'api/manufacturers';
+    const API_ENDPOINT = 'api/comm-links';
 
     /**
-     * Star Citizen Manufacturer
-     * https://docs.star-citizen.wiki/star_citizen_api.html#einzelner-hersteller
+     * Comm-Link Metadata
+     * https://docs.star-citizen.wiki/star_citizen_api.html#einzelner-comm-link
      *
-     * @return string JSON data
+     * @return string
      */
-    public function getManufacturer()
+    public function getCommLinkMetadata()
     {
         try {
             $response = $this->client->get( $this->makeUrl() );
@@ -27,7 +27,7 @@ class ManufacturerRepository extends AbstractRepository
                 [
                 'error' => 500,
                 'message' => 'Could not connect to Api',
-                ] 
+                 ] 
             );
         } catch ( ClientException $e ) {
             return $this->responseFromException( $e );
