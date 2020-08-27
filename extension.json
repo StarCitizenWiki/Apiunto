@@ -2,11 +2,11 @@
 	"name": "Apiunto",
 	"version": "1.0.0",
 	"author": [
-		"FoXFTW"
+		"Octfx"
 	],
-	"url": "https://star-citizen.wiki",
+	"url": "https://github.com/StarCitizenWiki/Apiunto",
 	"descriptionmsg": "apiunto-desc",
-	"license-name": "",
+	"license-name": "MIT",
 	"type": "other",
 	"requires": {
 		"MediaWiki": ">= 1.30.0",
