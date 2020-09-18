@@ -22,22 +22,21 @@ namespace MediaWiki\Extension\Apiunto;
 /**
  * Hooks for Apiunto extension
  */
-class Hooks
-{
+class Hooks {
 
-    /**
-     * Register Lua Library
-     *
-     * @param  string $engine
-     * @param  array  $extraLibraries
-     * @return bool
-     */
-    public static function onScribuntoExternalLibraries( $engine, array &$extraLibraries )
-    {
-        if ( $engine === 'lua' ) {
-            $extraLibraries[ 'mw.ext.Apiunto' ] = Scribunto_ApiuntoLuaLibrary::class;
-        }
+	/**
+	 * Register Lua Library
+	 *
+	 * @param string $engine
+	 * @param array $extraLibraries
+	 * @return bool
+	 */
+	public static function onScribuntoExternalLibraries( string $engine, array &$extraLibraries
+	): bool {
+		if ( $engine === 'lua' ) {
+			$extraLibraries['mw.ext.Apiunto'] = Scribunto_ApiuntoLuaLibrary::class;
+		}
 
-        return true;
-    }
+		return true;
+	}
 }
