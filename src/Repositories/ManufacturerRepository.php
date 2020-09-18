@@ -2,37 +2,27 @@
 
 namespace MediaWiki\Extension\Apiunto\Repositories;
 
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ConnectException;
-
 /**
  * Star Citizen Manufacturer data
  */
-class ManufacturerRepository extends AbstractRepository
-{
-    const API_ENDPOINT = 'api/manufacturers';
+class ManufacturerRepository extends AbstractRepository {
+	/**
+	 * Available includes on the api
+	 */
+	public const INCLUDES = [
+		'ships',
+		'vehicles',
+	];
 
-    /**
-     * Star Citizen Manufacturer
-     * https://docs.star-citizen.wiki/star_citizen_api.html#einzelner-hersteller
-     *
-     * @return string JSON data
-     */
-    public function getManufacturer()
-    {
-        try {
-            $response = $this->client->get( $this->makeUrl() );
-        } catch ( ConnectException $e ) {
-            return \GuzzleHttp\json_encode(
-                [
-                'error' => 500,
-                'message' => 'Could not connect to Api',
-                ] 
-            );
-        } catch ( ClientException $e ) {
-            return $this->responseFromException( $e );
-        }
+	public const API_ENDPOINT = 'api/manufacturers';
 
-        return $response->getBody()->getContents();
-    }
+	/**
+	 * Star Citizen Manufacturer
+	 * https://docs.star-citizen.wiki/star_citizen_api.html#einzelner-hersteller
+	 *
+	 * @return string JSON data
+	 */
+	public function getManufacturer(): string {
+		return $this->request();
+	}
 }

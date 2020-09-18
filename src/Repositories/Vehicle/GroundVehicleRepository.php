@@ -8,5 +8,5 @@ namespace MediaWiki\Extension\Apiunto\Repositories\Vehicle;
  */
 class GroundVehicleRepository extends AbstractVehicleRepository
 {
-    const API_ENDPOINT = 'api/vehicles';
+    public const API_ENDPOINT = 'api/vehicles';
 }

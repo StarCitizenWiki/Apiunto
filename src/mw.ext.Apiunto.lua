@@ -2,40 +2,47 @@ local libraryUtil = require('libraryUtil')
 local Apiunto = {}
 local php
 
-function Apiunto.get_ship(name, locale)
-    libraryUtil.checkType('get_ship', 1, name, 'string', false)
-    libraryUtil.checkTypeMulti('get_ship', 2, locale, { 'string', 'nil' })
+local function request(method, payload)
+    if payload.identifier == nil then
+        local msg = string.format("identifier is missing in payload '%s'.",
+                method
+        )
+        error(msg, 3)
+    end
 
-    name = tostring(name)
-    locale = getLocale(locale)
+    if type(payload.args) ~= 'table' then
+        payload.args = {}
+    end
 
-    return php.get_ship(name, locale)
+    return php[method](payload.identifier, payload.args)
 end
 
-function Apiunto.get_ground_vehicle(name, locale)
-    libraryUtil.checkType('get_ground_vehicle', 1, name, 'string', false)
-    libraryUtil.checkTypeMulti('get_ground_vehicle', 2, locale, { 'string', 'nil' })
-
-    name = tostring(name)
-    locale = getLocale(locale)
-
-    return php.get_ground_vehicle(name, locale)
+function Apiunto.get_ship(name, args)
+    return request('get_ship', {
+        identifier = name,
+        args = args,
+    })
 end
 
-function Apiunto.get_manufacturer(name, locale)
-    libraryUtil.checkType('get_manufacturer', 1, name, 'string', false)
-    libraryUtil.checkTypeMulti('get_manufacturer', 2, locale, { 'string', 'nil' })
-
-    name = tostring(name)
-    locale = getLocale(locale)
-
-    return php.get_manufacturer(name, locale)
+function Apiunto.get_ground_vehicle(name, args)
+    return request('get_ground_vehicle', {
+        identifier = name,
+        args = args,
+    })
 end
 
-function Apiunto.get_comm_link_metadata(id)
-    libraryUtil.checkType('get_comm_link_metadata', 1, id, 'number', false)
+function Apiunto.get_manufacturer(name, args)
+    return request('get_manufacturer', {
+        identifier = name,
+        args = args,
+    })
+end
 
-    return php.get_comm_link_metadata(id)
+function Apiunto.get_comm_link_metadata(id, args)
+    return request('get_comm_link_metadata', {
+        identifier = id,
+        args = args,
+    })
 end
 
 function Apiunto.setupInterface(options)
