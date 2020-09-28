@@ -45,6 +45,20 @@ function Apiunto.get_comm_link_metadata(id, args)
     })
 end
 
+function Apiunto.get_starsystem(id, args)
+    return request('get_starsystem', {
+        identifier = id,
+        args = args,
+    })
+end
+
+function Apiunto.get_celestial_object(id, args)
+    return request('get_celestial_object', {
+        identifier = id,
+        args = args,
+    })
+end
+
 function Apiunto.setupInterface(options)
     -- Boilerplate
     Apiunto.setupInterface = nil

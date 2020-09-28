@@ -1,4 +1,6 @@
-<?php declare( strict_types=1 );
+<?php
+
+declare( strict_types=1 );
 
 namespace MediaWiki\Extension\Apiunto;
 
@@ -6,6 +8,8 @@ use ConfigException;
 use GuzzleHttp\Client;
 use MediaWiki\Extension\Apiunto\Repositories\CommLinkRepository;
 use MediaWiki\Extension\Apiunto\Repositories\ManufacturerRepository;
+use MediaWiki\Extension\Apiunto\Repositories\Starmap\CelestialObjectRepository;
+use MediaWiki\Extension\Apiunto\Repositories\Starmap\StarsystemRepository;
 use MediaWiki\Extension\Apiunto\Repositories\Vehicle\GroundVehicleRepository;
 use MediaWiki\Extension\Apiunto\Repositories\Vehicle\ShipRepository;
 use MediaWiki\MediaWikiServices;
@@ -82,6 +86,8 @@ class Scribunto_ApiuntoLuaLibrary extends \Scribunto_LuaLibraryBase {
 			'get_ground_vehicle' => [ $this, 'getGroundVehicle' ],
 			'get_manufacturer' => [ $this, 'getManufacturer' ],
 			'get_comm_link_metadata' => [ $this, 'getCommLinkMetadata' ],
+			'get_starsystem' => [ $this, 'getStarsystem' ],
+			'get_celestial_object' => [ $this, 'getCelestialObject' ],
 		];
 
 		return $this->getEngine()->registerInterface( __DIR__ . '/mw.ext.Apiunto.lua', $lib, [] );
@@ -157,6 +163,42 @@ class Scribunto_ApiuntoLuaLibrary extends \Scribunto_LuaLibraryBase {
 		] );
 
 		return [ $repository->getCommLinkMetadata() ];
+	}
+
+	/**
+	 * Requests metadata for a starsystem
+	 *
+	 * @return array Starsystem Data
+	 */
+	public function getStarsystem(): array {
+		$params = func_get_args();
+
+		$this->availableIncludes = StarsystemRepository::INCLUDES;
+
+		$repository = new StarsystemRepository( static::$client, [
+			self::IDENTIFIER => $params[0],
+			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
+		] );
+
+		return [ $repository->getStarmap() ];
+	}
+
+	/**
+	 * Requests metadata for a celestial object
+	 *
+	 * @return array Celestial object data
+	 */
+	public function getCelestialObject(): array {
+		$params = func_get_args();
+
+		$this->availableIncludes = CelestialObjectRepository::INCLUDES;
+
+		$repository = new CelestialObjectRepository( static::$client, [
+			self::IDENTIFIER => $params[0],
+			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
+		] );
+
+		return [ $repository->getCelestialObject() ];
 	}
 
 	/**
