@@ -33,7 +33,9 @@
 		"MediaWiki\\Extension\\Apiunto\\Repositories\\CommLinkRepository": "src/Repositories/CommLinkRepository.php",
 
 		"MediaWiki\\Extension\\Apiunto\\Repositories\\Starmap\\CelestialObjectRepository": "src/Repositories/Starmap/CelestialObjectRepository.php",
-		"MediaWiki\\Extension\\Apiunto\\Repositories\\Starmap\\StarsystemRepository": "src/Repositories/Starmap/StarsystemRepository.php"
+		"MediaWiki\\Extension\\Apiunto\\Repositories\\Starmap\\StarsystemRepository": "src/Repositories/Starmap/StarsystemRepository.php",
+
+		"MediaWiki\\Extension\\Apiunto\\Repositories\\RawRepository": "src/Repositories/RawRepository.php"
 	},
 	"config": {
 		"ApiuntoKey": {

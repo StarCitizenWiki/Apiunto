@@ -59,6 +59,13 @@ function Apiunto.get_celestial_object(id, args)
     })
 end
 
+function Apiunto.get_raw(uri, args)
+    return request('get_raw', {
+        identifier = uri,
+        args = args,
+    })
+end
+
 function Apiunto.setupInterface(options)
     -- Boilerplate
     Apiunto.setupInterface = nil

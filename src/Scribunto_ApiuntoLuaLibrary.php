@@ -8,6 +8,7 @@ use ConfigException;
 use GuzzleHttp\Client;
 use MediaWiki\Extension\Apiunto\Repositories\CommLinkRepository;
 use MediaWiki\Extension\Apiunto\Repositories\ManufacturerRepository;
+use MediaWiki\Extension\Apiunto\Repositories\RawRepository;
 use MediaWiki\Extension\Apiunto\Repositories\Starmap\CelestialObjectRepository;
 use MediaWiki\Extension\Apiunto\Repositories\Starmap\StarsystemRepository;
 use MediaWiki\Extension\Apiunto\Repositories\Vehicle\GroundVehicleRepository;
@@ -88,6 +89,7 @@ class Scribunto_ApiuntoLuaLibrary extends \Scribunto_LuaLibraryBase {
 			'get_comm_link_metadata' => [ $this, 'getCommLinkMetadata' ],
 			'get_starsystem' => [ $this, 'getStarsystem' ],
 			'get_celestial_object' => [ $this, 'getCelestialObject' ],
+			'get_raw' => [ $this, 'getRaw' ],
 		];
 
 		return $this->getEngine()->registerInterface( __DIR__ . '/mw.ext.Apiunto.lua', $lib, [] );
@@ -199,6 +201,27 @@ class Scribunto_ApiuntoLuaLibrary extends \Scribunto_LuaLibraryBase {
 		] );
 
 		return [ $repository->getCelestialObject() ];
+	}
+
+	/**
+	 * Raw request
+	 *
+	 * Identifier is the complete uri excluding 'api'
+	 * E.g.: starmap/starsystems
+	 *
+	 * @return array
+	 */
+	public function getRaw(): array {
+		$params = func_get_args();
+
+		$this->availableIncludes = $params[1]['include'] ?? [];
+
+		$repository = new RawRepository( static::$client, [
+			self::IDENTIFIER => $params[0],
+			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
+		] );
+
+		return [ $repository->getRaw() ];
 	}
 
 	/**
