@@ -60,7 +60,13 @@
 			}
 		}
 	},
+	"HookHandlers": {
+		"PurgeHooks": {
+			"class": "MediaWiki\\Extension\\Apiunto\\Hooks\\PurgeHooks"
+		}
+	},
 	"Hooks": {
+		"ArticlePurge": "PurgeHooks",
 		"ScribuntoExternalLibraries": "MediaWiki\\Extension\\Apiunto\\Hooks\\ScribuntoHooks::onScribuntoExternalLibraries"
 	},
 	"manifest_version": 2

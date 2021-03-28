@@ -44,6 +44,11 @@ abstract class AbstractRepository {
 	protected $options;
 
 	/**
+	 * @var bool
+	 */
+	private $cacheWritten = false;
+
+	/**
 	 * AbstractRepository constructor.
 	 *
 	 * @param Client $client Request Client
@@ -62,6 +67,15 @@ abstract class AbstractRepository {
 	 */
 	public function setOptions( array $options ): void {
 		$this->options = $options;
+	}
+
+	/**
+	 * Check if the cache was written
+	 *
+	 * @return bool
+	 */
+	public function getCacheWritten(): bool {
+		return $this->cacheWritten;
 	}
 
 	/**
@@ -98,7 +112,7 @@ abstract class AbstractRepository {
 
 		$content = (string)$response->getBody();
 
-		$this->writeCache( $content );
+		$this->cacheWritten = $this->writeCache( $content );
 
 		return (string)$response->getBody();
 	}
@@ -115,12 +129,12 @@ abstract class AbstractRepository {
 		return $exception->getResponse()->getBody()->getContents();
 	}
 
-    /**
-     * Creates a key for caching
-     *
-     * @return string
-     */
-	protected function makeCacheKey(): string {
+	/**
+	 * Creates a key for caching
+	 *
+	 * @return string
+	 */
+	public function makeCacheKey(): string {
 		return ObjectCache::getLocalClusterInstance()->makeGlobalKey(
 			'apiunto',
 			explode( '/', self::API_ENDPOINT )[1] ?? self::API_ENDPOINT,
@@ -129,19 +143,20 @@ abstract class AbstractRepository {
 		);
 	}
 
-    /**
-     * Writes the response to cache
-     *
-     * @param $content
-     */
-	protected function writeCache( $content ): void {
+	/**
+	 * Writes the response to cache
+	 *
+	 * @param $content
+	 * @return bool
+	 */
+	protected function writeCache( $content ): bool {
 		if ( MediaWikiServices::getInstance()->getMainConfig()->get( 'ApiuntoEnableCache' ) !== true ) {
-			return;
+			return false;
 		}
 
 		$expiries = MediaWikiServices::getInstance()->getMainConfig()->get( 'ApiuntoCacheTimes' );
 
-		ObjectCache::getLocalClusterInstance()->set(
+		return ObjectCache::getLocalClusterInstance()->set(
 			$this->makeCacheKey(),
 			$content,
 			$expiries[str_replace( 'api/', '', self::API_ENDPOINT )] ?? $expiries['Default'],

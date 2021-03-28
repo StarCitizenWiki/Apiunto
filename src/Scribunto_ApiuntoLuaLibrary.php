@@ -23,6 +23,7 @@ namespace MediaWiki\Extension\Apiunto;
 
 use ConfigException;
 use GuzzleHttp\Client;
+use MediaWiki\Extension\Apiunto\Repositories\AbstractRepository;
 use MediaWiki\Extension\Apiunto\Repositories\CommLinkRepository;
 use MediaWiki\Extension\Apiunto\Repositories\GalactapediaRepository;
 use MediaWiki\Extension\Apiunto\Repositories\ManufacturerRepository;
@@ -108,6 +109,7 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 			'get_comm_link_metadata' => [ $this, 'getCommLinkMetadata' ],
 			'get_starsystem' => [ $this, 'getStarsystem' ],
 			'get_celestial_object' => [ $this, 'getCelestialObject' ],
+			'get_galactapedia' => [ $this, 'getGalactapedia' ],
 			'get_raw' => [ $this, 'getRaw' ],
 		];
 
@@ -129,7 +131,10 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
 		] );
 
-		return [ $repository->getVehicle() ];
+		$response = $repository->getVehicle();
+		$this->writeCachePropertyKey( $repository );
+
+		return [ $response ];
 	}
 
 	/**
@@ -147,7 +152,10 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
 		] );
 
-		return [ $repository->getVehicle() ];
+		$response = $repository->getVehicle();
+		$this->writeCachePropertyKey( $repository );
+
+		return [ $response ];
 	}
 
 	/**
@@ -165,7 +173,10 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
 		] );
 
-		return [ $repository->getManufacturer() ];
+		$response = $repository->getManufacturer();
+		$this->writeCachePropertyKey( $repository );
+
+		return [ $response ];
 	}
 
 	/**
@@ -183,7 +194,10 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
 		] );
 
-		return [ $repository->getCommLinkMetadata() ];
+		$response = $repository->getCommLinkMetadata();
+		$this->writeCachePropertyKey( $repository );
+
+		return [ $response ];
 	}
 
 	/**
@@ -201,9 +215,10 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
 		] );
 
-		$content = $repository->getStarmap();
+		$response = $repository->getStarmap();
+		$this->writeCachePropertyKey( $repository );
 
-		return [ $content ];
+		return [ $response ];
 	}
 
 	/**
@@ -221,7 +236,10 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
 		] );
 
-		return [ $repository->getCelestialObject() ];
+		$response = $repository->getCelestialObject();
+		$this->writeCachePropertyKey( $repository );
+
+		return [ $response ];
 	}
 
 	/**
@@ -239,7 +257,10 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
 		] );
 
-		return [ $repository->getGalactapediaData() ];
+		$response = $repository->getGalactapediaData();
+		$this->writeCachePropertyKey( $repository );
+
+		return [ $response ];
 	}
 
 	/**
@@ -260,7 +281,10 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
 		] );
 
-		return [ $repository->getRaw() ];
+		$response = $repository->getRaw();
+		$this->writeCachePropertyKey( $repository );
+
+		return [ $response ];
 	}
 
 	/**
@@ -353,5 +377,16 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Write the cache key to the page props for purging
+	 *
+	 * @param AbstractRepository $repository
+	 */
+	private function writeCachePropertyKey( AbstractRepository $repository ): void {
+		if ( $repository->getCacheWritten() ) {
+			$this->getParser()->getOutput()->setProperty( 'apiuntocache', $repository->makeCacheKey() );
+		}
 	}
 }
