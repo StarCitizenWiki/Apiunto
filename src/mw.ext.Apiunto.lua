@@ -59,6 +59,13 @@ function Apiunto.get_celestial_object(id, args)
     })
 end
 
+function Apiunto.get_galactapedia(id, args)
+    return request('get_galactapedia', {
+        identifier = id,
+        args = args,
+    })
+end
+
 function Apiunto.get_raw(uri, args)
     return request('get_raw', {
         identifier = uri,

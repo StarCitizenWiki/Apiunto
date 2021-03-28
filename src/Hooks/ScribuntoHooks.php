@@ -1,7 +1,4 @@
 <?php
-
-declare( strict_types=1 );
-
 /**
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,22 +17,25 @@ declare( strict_types=1 );
  * @file
  */
 
-namespace MediaWiki\Extension\Apiunto;
+declare( strict_types=1 );
+
+namespace MediaWiki\Extension\Apiunto\Hooks;
+
+use MediaWiki\Extension\Apiunto\Scribunto_ApiuntoLuaLibrary;
 
 /**
  * Hooks for Apiunto extension
  */
-class Hooks {
+class ScribuntoHooks {
 
 	/**
 	 * Register Lua Library
 	 *
 	 * @param string $engine
-	 * @param array $extraLibraries
+	 * @param array &$extraLibraries
 	 * @return bool
 	 */
-	public static function onScribuntoExternalLibraries( string $engine, array &$extraLibraries
-	): bool {
+	public static function onScribuntoExternalLibraries( string $engine, array &$extraLibraries ): bool {
 		if ( $engine === 'lua' ) {
 			$extraLibraries['mw.ext.Apiunto'] = Scribunto_ApiuntoLuaLibrary::class;
 		}

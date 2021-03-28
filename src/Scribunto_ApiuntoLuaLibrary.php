@@ -1,4 +1,21 @@
 <?php
+/**
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * @file
+ */
 
 declare( strict_types=1 );
 
@@ -7,6 +24,7 @@ namespace MediaWiki\Extension\Apiunto;
 use ConfigException;
 use GuzzleHttp\Client;
 use MediaWiki\Extension\Apiunto\Repositories\CommLinkRepository;
+use MediaWiki\Extension\Apiunto\Repositories\GalactapediaRepository;
 use MediaWiki\Extension\Apiunto\Repositories\ManufacturerRepository;
 use MediaWiki\Extension\Apiunto\Repositories\RawRepository;
 use MediaWiki\Extension\Apiunto\Repositories\Starmap\CelestialObjectRepository;
@@ -15,11 +33,12 @@ use MediaWiki\Extension\Apiunto\Repositories\Vehicle\GroundVehicleRepository;
 use MediaWiki\Extension\Apiunto\Repositories\Vehicle\ShipRepository;
 use MediaWiki\MediaWikiServices;
 use Scribunto_LuaEngine;
+use Scribunto_LuaLibraryBase;
 
 /**
  * Methods callable by LUA
  */
-class Scribunto_ApiuntoLuaLibrary extends \Scribunto_LuaLibraryBase {
+class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 
 	/**
 	 * Page identifier like ship name oder comm-link id
@@ -182,7 +201,9 @@ class Scribunto_ApiuntoLuaLibrary extends \Scribunto_LuaLibraryBase {
 			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
 		] );
 
-		return [ $repository->getStarmap() ];
+		$content = $repository->getStarmap();
+
+		return [ $content ];
 	}
 
 	/**
@@ -201,6 +222,24 @@ class Scribunto_ApiuntoLuaLibrary extends \Scribunto_LuaLibraryBase {
 		] );
 
 		return [ $repository->getCelestialObject() ];
+	}
+
+	/**
+	 * Requests metadata for a galactapedia article
+	 *
+	 * @return array Galactapedia Article data
+	 */
+	public function getGalactapedia(): array {
+		$params = func_get_args();
+
+		$this->availableIncludes = GalactapediaRepository::INCLUDES;
+
+		$repository = new GalactapediaRepository( static::$client, [
+			self::IDENTIFIER => $params[0],
+			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
+		] );
+
+		return [ $repository->getGalactapediaData() ];
 	}
 
 	/**
