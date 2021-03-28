@@ -139,11 +139,13 @@ abstract class AbstractRepository {
 			'apiunto',
 			MediaWikiServices::getInstance()->getMainConfig()->get( 'ApiuntoApiVersion' ),
 			explode( '/', static::API_ENDPOINT )[1] ?? static::API_ENDPOINT,
-			implode(
-				':',
-				array_merge(
-					(array)( $this->options[Scribunto_ApiuntoLuaLibrary::IDENTIFIER] ),
-					(array)( $this->options[Scribunto_ApiuntoLuaLibrary::QUERY_PARAMS] ),
+			md5(
+				implode(
+					':',
+					array_merge(
+						(array)( $this->options[Scribunto_ApiuntoLuaLibrary::IDENTIFIER] ),
+						(array)( $this->options[Scribunto_ApiuntoLuaLibrary::QUERY_PARAMS] ),
+					)
 				)
 			)
 		);

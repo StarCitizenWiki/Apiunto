@@ -385,8 +385,6 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 	 * @param AbstractRepository $repository
 	 */
 	private function writeCachePropertyKey( AbstractRepository $repository ): void {
-		if ( $repository->getCacheWritten() && $this->getEngine()->getParser() !== null ) {
-			$this->getEngine()->getParser()->getOutput()->setProperty( 'apiuntocache', $repository->makeCacheKey() );
-		}
+		$this->getParser()->getOutput()->setProperty( 'apiuntocache', $repository->makeCacheKey() );
 	}
 }
