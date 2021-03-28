@@ -1,6 +1,6 @@
 {
 	"name": "Apiunto",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"author": [
 		"Octfx"
 	],
@@ -12,6 +12,9 @@
 		"MediaWiki": ">= 1.35.0",
 		"extensions": {
 			"Scribunto": "*"
+		},
+		"platform": {
+			"php": ">=7.3.19"
 		}
 	},
 	"MessagesDirs": {
