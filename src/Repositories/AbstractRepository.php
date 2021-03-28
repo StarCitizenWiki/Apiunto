@@ -137,9 +137,15 @@ abstract class AbstractRepository {
 	public function makeCacheKey(): string {
 		return ObjectCache::getLocalClusterInstance()->makeGlobalKey(
 			'apiunto',
-			explode( '/', self::API_ENDPOINT )[1] ?? self::API_ENDPOINT,
 			MediaWikiServices::getInstance()->getMainConfig()->get( 'ApiuntoApiVersion' ),
-			...array_values( $this->options )
+			explode( '/', static::API_ENDPOINT )[1] ?? static::API_ENDPOINT,
+			implode(
+				':',
+				array_merge(
+					(array)( $this->options[Scribunto_ApiuntoLuaLibrary::IDENTIFIER] ),
+					(array)( $this->options[Scribunto_ApiuntoLuaLibrary::QUERY_PARAMS] ),
+				)
+			)
 		);
 	}
 

@@ -41,7 +41,7 @@ class PurgeHooks implements ArticlePurgeHook {
 		$res = $db->select(
 			'page_props',
 			[
-				'pp_propname',
+				'pp_value',
 			],
 			[
 				'pp_page' => $wikiPage->getTitle()->getArticleID(),
@@ -54,11 +54,19 @@ class PurgeHooks implements ArticlePurgeHook {
 			return;
 		}
 
-		$key = $res->fetchRow();
-		if ( $key === false ) {
+		$row = $res->fetchRow();
+		if ( $row === false || !isset( $row['pp_value'] ) ) {
 			return;
 		}
 
-		ObjectCache::getLocalClusterInstance()->delete( $key['pp_propname'] );
+		$dbl->getConnection( $dbl->getWriterIndex() )->delete(
+			'page_props',
+			[
+				'pp_page' => $wikiPage->getTitle()->getArticleID(),
+				'pp_propname' => 'apiuntocache',
+			]
+		);
+
+		ObjectCache::getLocalClusterInstance()->delete( $row['pp_value'] );
 	}
 }
