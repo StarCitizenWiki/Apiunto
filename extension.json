@@ -1,6 +1,6 @@
 {
 	"name": "Apiunto",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"author": [
 		"Octfx"
 	],
@@ -9,7 +9,7 @@
 	"license-name": "MIT",
 	"type": "other",
 	"requires": {
-		"MediaWiki": ">= 1.33.0",
+		"MediaWiki": ">= 1.35.0",
 		"extensions": {
 			"Scribunto": "*"
 		},
@@ -22,18 +22,8 @@
 			"i18n"
 		]
 	},
-	"AutoloadClasses": {
-		"MediaWiki\\Extension\\Apiunto\\Hooks": "src/Hooks.php",
-		"MediaWiki\\Extension\\Apiunto\\Scribunto_ApiuntoLuaLibrary": "src/Scribunto_ApiuntoLuaLibrary.php",
-		"MediaWiki\\Extension\\Apiunto\\Repositories\\AbstractRepository": "src/Repositories/AbstractRepository.php",
-
-		"MediaWiki\\Extension\\Apiunto\\Repositories\\Vehicle\\AbstractVehicleRepository": "src/Repositories/Vehicle/AbstractVehicleRepository.php",
-		"MediaWiki\\Extension\\Apiunto\\Repositories\\Vehicle\\ShipRepository": "src/Repositories/Vehicle/ShipRepository.php",
-		"MediaWiki\\Extension\\Apiunto\\Repositories\\Vehicle\\GroundVehicleRepository": "src/Repositories/Vehicle/GroundVehicleRepository.php",
-
-		"MediaWiki\\Extension\\Apiunto\\Repositories\\ManufacturerRepository": "src/Repositories/ManufacturerRepository.php",
-
-		"MediaWiki\\Extension\\Apiunto\\Repositories\\CommLinkRepository": "src/Repositories/CommLinkRepository.php"
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\Apiunto\\": "src/"
 	},
 	"config": {
 		"ApiuntoKey": {
@@ -53,15 +43,25 @@
 			"description": "Accepted Version"
 		},
 		"ApiuntoDefaultLocale": {
-			"value": null,
-			"description": "The Locale to return, unset to get all translations"
+			"description": "The Locale to return, unset to get all translations",
+			"value": null
+		},
+		"ApiuntoEnableCache": {
+			"description": "Save api responses in cache",
+			"value": true
+		},
+		"ApiuntoCacheTimes": {
+			"description": "Specific cache expiries",
+			"value": {
+				"Default": 86400,
+				"comm-links": 31536000,
+				"starmap/starsystems": 2592000,
+				"starmap/celestial-objects": 2592000
+			}
 		}
 	},
 	"Hooks": {
-		"ScribuntoExternalLibraries": [
-			"MediaWiki\\Extension\\Apiunto\\Hooks::onScribuntoExternalLibraries"
-		]
+		"ScribuntoExternalLibraries": "MediaWiki\\Extension\\Apiunto\\Hooks\\ScribuntoHooks::onScribuntoExternalLibraries"
 	},
-	"load_composer_autoloader": true,
 	"manifest_version": 2
 }

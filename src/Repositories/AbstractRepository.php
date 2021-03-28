@@ -1,4 +1,23 @@
-<?php declare( strict_types=1 );
+<?php
+/**
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * @file
+ */
+
+declare( strict_types=1 );
 
 namespace MediaWiki\Extension\Apiunto\Repositories;
 
@@ -50,13 +69,18 @@ abstract class AbstractRepository {
 	 */
 	protected function request(): string {
 		try {
-			$url =
-				sprintf( '%s/%s', static::API_ENDPOINT,
-					$this->options[Scribunto_ApiuntoLuaLibrary::IDENTIFIER] );
+			$url = sprintf(
+				'%s/%s',
+				static::API_ENDPOINT,
+				$this->options[Scribunto_ApiuntoLuaLibrary::IDENTIFIER]
+			);
 
-			$response =
-				$this->client->get( $url,
-					['query' => $this->options[Scribunto_ApiuntoLuaLibrary::QUERY_PARAMS]] );
+			$response = $this->client->get(
+				$url,
+				[
+					'query' => $this->options[Scribunto_ApiuntoLuaLibrary::QUERY_PARAMS]
+				]
+			);
 		} catch ( ConnectException $e ) {
 			return \GuzzleHttp\json_encode( [
 				'error' => 500,
@@ -66,7 +90,7 @@ abstract class AbstractRepository {
 			return $this->responseFromException( $e );
 		}
 
-		return $response->getBody()->getContents();
+		return (string)$response->getBody();
 	}
 
 	/**
@@ -80,4 +104,5 @@ abstract class AbstractRepository {
 
 		return $exception->getResponse()->getBody()->getContents();
 	}
+
 }

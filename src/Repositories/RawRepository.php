@@ -19,12 +19,19 @@
 
 declare( strict_types=1 );
 
-namespace MediaWiki\Extension\Apiunto\Repositories\Vehicle;
+namespace MediaWiki\Extension\Apiunto\Repositories;
 
 /**
- * Ships
- * https://docs.star-citizen.wiki/vehicles/ships.html
+ * Star Citizen Comm-Link metadata
  */
-class ShipRepository extends AbstractVehicleRepository {
-	public const API_ENDPOINT = 'api/ships';
+class RawRepository extends AbstractRepository {
+
+	public const API_ENDPOINT = 'api';
+
+	/**
+	 * @return string
+	 */
+	public function getRaw(): string {
+		return $this->request();
+	}
 }

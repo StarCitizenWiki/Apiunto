@@ -54,15 +54,34 @@ local rsi = api.get_manufacturer( 'RSI', {
 -- Comm-Link Metadata
 -- Docs: https://docs.star-citizen.wiki/star_citizen_api.html#comm-links
 -- Output: https://api.star-citizen.wiki/api/comm-links/12667
-local rsi = api.get_comm_link_metadata( 12667 )
+local commLink = api.get_comm_link_metadata( 12667 )
 
 -- Comm-Link Metadata including images and image hashes
 -- Docs: https://docs.star-citizen.wiki/star_citizen_api.html#comm-links
 -- Output: https://api.star-citizen.wiki/api/comm-links/12667
-local rsi = api.get_comm_link_metadata( 12667, {
+local commLink = api.get_comm_link_metadata( 12667, {
     include = {
         'images',
         'images.hashes',
+    }
+} )
+
+-- Star System Data
+-- Includable: "jumppoint_entries", "jumppoint_exits", "celestial_objects"
+-- Output: https://api.star-citizen.wiki/api/starmap/starsystems/sol
+local sol = api.get_starsystem( 'sol' ) -- Or: 'SOL' / 355 (id)
+
+-- Celestial object data
+-- Output: https://api.star-citizen.wiki/api/starmap/celestial-objects/SOL.JUMPPOINTS.CROSHAW
+local jumppoint = api.get_celestial_object( 'SOL.JUMPPOINTS.CROSHAW', {
+    include = {
+    }
+} )
+
+-- Output: https://api.star-citizen.wiki/api/starmap/celestial-objects/2702
+-- YULIN.STATION.YULINFLOTILLA
+local objectById = api.get_celestial_object( 2702, {
+    include = {
     }
 } )
 ```

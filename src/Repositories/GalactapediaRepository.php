@@ -19,12 +19,31 @@
 
 declare( strict_types=1 );
 
-namespace MediaWiki\Extension\Apiunto\Repositories\Vehicle;
+namespace MediaWiki\Extension\Apiunto\Repositories;
 
 /**
- * Ships
- * https://docs.star-citizen.wiki/vehicles/ships.html
+ * Star Citizen Galactapedia API
  */
-class ShipRepository extends AbstractVehicleRepository {
-	public const API_ENDPOINT = 'api/ships';
+class GalactapediaRepository extends AbstractRepository {
+	/**
+	 * Available includes on the api
+	 */
+	public const INCLUDES = [
+		'categories',
+		'properties',
+		'tags',
+		'related_articles',
+	];
+
+	public const API_ENDPOINT = 'api/galactapedia';
+
+	/**
+	 * Galactapedia Data
+	 * https://docs.star-citizen.wiki/galactapedia/galactapedia.html
+	 *
+	 * @return string
+	 */
+	public function getGalactapediaData(): string {
+		return $this->request();
+	}
 }

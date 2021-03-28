@@ -19,12 +19,26 @@
 
 declare( strict_types=1 );
 
-namespace MediaWiki\Extension\Apiunto\Repositories\Vehicle;
+namespace MediaWiki\Extension\Apiunto\Repositories\Starmap;
 
-/**
- * Ships
- * https://docs.star-citizen.wiki/vehicles/ships.html
- */
-class ShipRepository extends AbstractVehicleRepository {
-	public const API_ENDPOINT = 'api/ships';
+use MediaWiki\Extension\Apiunto\Repositories\AbstractRepository;
+
+class CelestialObjectRepository extends AbstractRepository {
+	/**
+	 * Available includes on the api
+	 */
+	public const INCLUDES = [
+		'starsystem',
+	];
+
+	public const API_ENDPOINT = 'api/starmap/celestial-objects';
+
+	/**
+	 * Starmap data
+	 *
+	 * @return string
+	 */
+	public function getCelestialObject(): string {
+		return $this->request();
+	}
 }
