@@ -26,6 +26,8 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\GuzzleException;
 use MediaWiki\Extension\Apiunto\Scribunto_ApiuntoLuaLibrary;
+use MediaWiki\MediaWikiServices;
+use ObjectCache;
 
 abstract class AbstractRepository {
 	public const API_ENDPOINT = '';
@@ -68,6 +70,10 @@ abstract class AbstractRepository {
 	 * @return string
 	 */
 	protected function request(): string {
+		if ( ObjectCache::getLocalClusterInstance()->get( $this->makeCacheKey() ) !== false ) {
+			return ObjectCache::getLocalClusterInstance()->get( $this->makeCacheKey() );
+		}
+
 		try {
 			$url = sprintf(
 				'%s/%s',
@@ -90,6 +96,10 @@ abstract class AbstractRepository {
 			return $this->responseFromException( $e );
 		}
 
+		$content = (string)$response->getBody();
+
+		$this->writeCache( $content );
+
 		return (string)$response->getBody();
 	}
 
@@ -103,6 +113,39 @@ abstract class AbstractRepository {
 		}
 
 		return $exception->getResponse()->getBody()->getContents();
+	}
+
+    /**
+     * Creates a key for caching
+     *
+     * @return string
+     */
+	protected function makeCacheKey(): string {
+		return ObjectCache::getLocalClusterInstance()->makeGlobalKey(
+			'apiunto',
+			explode( '/', self::API_ENDPOINT )[1] ?? self::API_ENDPOINT,
+			MediaWikiServices::getInstance()->getMainConfig()->get( 'ApiuntoApiVersion' ),
+			...array_values( $this->options )
+		);
+	}
+
+    /**
+     * Writes the response to cache
+     *
+     * @param $content
+     */
+	protected function writeCache( $content ): void {
+		if ( MediaWikiServices::getInstance()->getMainConfig()->get( 'ApiuntoEnableCache' ) !== true ) {
+			return;
+		}
+
+		$expiries = MediaWikiServices::getInstance()->getMainConfig()->get( 'ApiuntoCacheTimes' );
+
+		ObjectCache::getLocalClusterInstance()->set(
+			$this->makeCacheKey(),
+			$content,
+			$expiries[str_replace( 'api/', '', self::API_ENDPOINT )] ?? $expiries['Default'],
+		);
 	}
 
 }
