@@ -62,7 +62,10 @@
 	},
 	"HookHandlers": {
 		"PurgeHooks": {
-			"class": "MediaWiki\\Extension\\Apiunto\\Hooks\\PurgeHooks"
+			"class": "MediaWiki\\Extension\\Apiunto\\Hooks\\PurgeHooks",
+			"services": [
+				"DBLoadBalancer"
+			]
 		}
 	},
 	"Hooks": {

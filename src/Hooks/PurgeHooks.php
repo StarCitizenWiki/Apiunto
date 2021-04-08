@@ -21,11 +21,25 @@ declare( strict_types=1 );
 
 namespace MediaWiki\Extension\Apiunto\Hooks;
 
-use MediaWiki\MediaWikiServices;
 use MediaWiki\Page\Hook\ArticlePurgeHook;
 use ObjectCache;
+use Wikimedia\Rdbms\ILoadBalancer;
 
 class PurgeHooks implements ArticlePurgeHook {
+
+	/**
+	 * @var ILoadBalancer
+	 */
+	private $loadBalancer;
+
+	/**
+	 * PurgeHooks constructor.
+	 *
+	 * @param ILoadBalancer $loadBalancer
+	 */
+	public function __construct( ILoadBalancer $loadBalancer ) {
+		$this->loadBalancer = $loadBalancer;
+	}
 
 	/**
 	 * @inheritDoc
@@ -35,8 +49,7 @@ class PurgeHooks implements ArticlePurgeHook {
 			return;
 		}
 
-		$dbl = MediaWikiServices::getInstance()->getDBLoadBalancer();
-		$db = $dbl->getConnection( $dbl->getReaderIndex() );
+		$db = $this->loadBalancer->getConnection( $this->loadBalancer->getReaderIndex() );
 
 		$res = $db->select(
 			'page_props',
@@ -59,7 +72,7 @@ class PurgeHooks implements ArticlePurgeHook {
 			return;
 		}
 
-		$dbl->getConnection( $dbl->getWriterIndex() )->delete(
+		$this->loadBalancer->getConnection( $this->loadBalancer->getWriterIndex() )->delete(
 			'page_props',
 			[
 				'pp_page' => $wikiPage->getTitle()->getArticleID(),
