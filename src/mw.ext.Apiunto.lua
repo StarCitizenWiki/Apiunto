@@ -66,6 +66,13 @@ function Apiunto.get_galactapedia(id, args)
     })
 end
 
+function Apiunto.get_weapon_personal(name, args)
+    return request('get_weapon_personal', {
+        identifier = name,
+        args = args,
+    })
+end
+
 function Apiunto.get_raw(uri, args)
     return request('get_raw', {
         identifier = uri,

@@ -32,6 +32,7 @@ use MediaWiki\Extension\Apiunto\Repositories\Starmap\CelestialObjectRepository;
 use MediaWiki\Extension\Apiunto\Repositories\Starmap\StarsystemRepository;
 use MediaWiki\Extension\Apiunto\Repositories\Vehicle\GroundVehicleRepository;
 use MediaWiki\Extension\Apiunto\Repositories\Vehicle\ShipRepository;
+use MediaWiki\Extension\Apiunto\Repositories\WeaponPersonalRepository;
 use MediaWiki\MediaWikiServices;
 use Scribunto_LuaEngine;
 use Scribunto_LuaLibraryBase;
@@ -110,6 +111,7 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 			'get_starsystem' => [ $this, 'getStarsystem' ],
 			'get_celestial_object' => [ $this, 'getCelestialObject' ],
 			'get_galactapedia' => [ $this, 'getGalactapedia' ],
+			'get_weapon_personal' => [ $this, 'getWeaponPersonal' ],
 			'get_raw' => [ $this, 'getRaw' ],
 		];
 
@@ -258,6 +260,27 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 		] );
 
 		$response = $repository->getGalactapediaData();
+		$this->writeCachePropertyKey( $repository );
+
+		return [ $response ];
+	}
+
+	/**
+	 * Requests metadata for a personal weapon
+	 *
+	 * @return array Pesonal Weapon data
+	 */
+	public function getWeaponPersonal(): array {
+		$params = func_get_args();
+
+		$this->availableIncludes = WeaponPersonalRepository::INCLUDES;
+
+		$repository = new WeaponPersonalRepository( static::$client, [
+			self::IDENTIFIER => $params[0],
+			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
+		] );
+
+		$response = $repository->getWeaponPersonal();
 		$this->writeCachePropertyKey( $repository );
 
 		return [ $response ];
