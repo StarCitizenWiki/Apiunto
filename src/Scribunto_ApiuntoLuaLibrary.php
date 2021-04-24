@@ -24,6 +24,7 @@ namespace MediaWiki\Extension\Apiunto;
 use ConfigException;
 use GuzzleHttp\Client;
 use MediaWiki\Extension\Apiunto\Repositories\AbstractRepository;
+use MediaWiki\Extension\Apiunto\Repositories\CharArmorRepository;
 use MediaWiki\Extension\Apiunto\Repositories\CommLinkRepository;
 use MediaWiki\Extension\Apiunto\Repositories\GalactapediaRepository;
 use MediaWiki\Extension\Apiunto\Repositories\ManufacturerRepository;
@@ -112,6 +113,7 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 			'get_celestial_object' => [ $this, 'getCelestialObject' ],
 			'get_galactapedia' => [ $this, 'getGalactapedia' ],
 			'get_weapon_personal' => [ $this, 'getWeaponPersonal' ],
+			'get_char_armor' => [ $this, 'getCharArmor' ],
 			'get_raw' => [ $this, 'getRaw' ],
 		];
 
@@ -281,6 +283,27 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 		] );
 
 		$response = $repository->getWeaponPersonal();
+		$this->writeCachePropertyKey( $repository );
+
+		return [ $response ];
+	}
+
+	/**
+	 * Requests metadata for a character armor
+	 *
+	 * @return array Char armor data
+	 */
+	public function getCharArmor(): array {
+		$params = func_get_args();
+
+		$this->availableIncludes = CharArmorRepository::INCLUDES;
+
+		$repository = new CharArmorRepository( static::$client, [
+			self::IDENTIFIER => $params[0],
+			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
+		] );
+
+		$response = $repository->getCharArmor();
 		$this->writeCachePropertyKey( $repository );
 
 		return [ $response ];
