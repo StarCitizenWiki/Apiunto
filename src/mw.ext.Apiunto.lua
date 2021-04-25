@@ -73,6 +73,13 @@ function Apiunto.get_weapon_personal(name, args)
     })
 end
 
+function Apiunto.get_char_armor(name, args)
+    return request('get_char_armor', {
+        identifier = name,
+        args = args,
+    })
+end
+
 function Apiunto.get_raw(uri, args)
     return request('get_raw', {
         identifier = uri,
