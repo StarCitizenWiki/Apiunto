@@ -80,6 +80,34 @@ function Apiunto.get_char_armor(name, args)
     })
 end
 
+function Apiunto.get_cooler(name, args)
+    return request('get_cooler', {
+        identifier = name,
+        args = args,
+    })
+end
+
+function Apiunto.get_power_plant(name, args)
+    return request('get_power_plant', {
+        identifier = name,
+        args = args,
+    })
+end
+
+function Apiunto.get_quantum_drive(name, args)
+    return request('get_quantum_drive', {
+        identifier = name,
+        args = args,
+    })
+end
+
+function Apiunto.get_shield(name, args)
+    return request('get_shield', {
+        identifier = name,
+        args = args,
+    })
+end
+
 function Apiunto.get_raw(uri, args)
     return request('get_raw', {
         identifier = uri,

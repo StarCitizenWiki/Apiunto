@@ -24,16 +24,20 @@ namespace MediaWiki\Extension\Apiunto;
 use ConfigException;
 use GuzzleHttp\Client;
 use MediaWiki\Extension\Apiunto\Repositories\AbstractRepository;
-use MediaWiki\Extension\Apiunto\Repositories\CharArmorRepository;
 use MediaWiki\Extension\Apiunto\Repositories\CommLinkRepository;
 use MediaWiki\Extension\Apiunto\Repositories\GalactapediaRepository;
+use MediaWiki\Extension\Apiunto\Repositories\Item\CharArmorRepository;
+use MediaWiki\Extension\Apiunto\Repositories\Item\WeaponPersonalRepository;
 use MediaWiki\Extension\Apiunto\Repositories\ManufacturerRepository;
 use MediaWiki\Extension\Apiunto\Repositories\RawRepository;
+use MediaWiki\Extension\Apiunto\Repositories\Ship\CoolerRepository;
+use MediaWiki\Extension\Apiunto\Repositories\Ship\PowerPlantRepository;
+use MediaWiki\Extension\Apiunto\Repositories\Ship\QuantumDriveRepository;
+use MediaWiki\Extension\Apiunto\Repositories\Ship\ShieldRepository;
 use MediaWiki\Extension\Apiunto\Repositories\Starmap\CelestialObjectRepository;
 use MediaWiki\Extension\Apiunto\Repositories\Starmap\StarsystemRepository;
 use MediaWiki\Extension\Apiunto\Repositories\Vehicle\GroundVehicleRepository;
 use MediaWiki\Extension\Apiunto\Repositories\Vehicle\ShipRepository;
-use MediaWiki\Extension\Apiunto\Repositories\WeaponPersonalRepository;
 use MediaWiki\MediaWikiServices;
 use Scribunto_LuaEngine;
 use Scribunto_LuaLibraryBase;
@@ -105,16 +109,20 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 	 */
 	public function register(): array {
 		$lib = [
-			'get_ship' => [ $this, 'getShip' ],
-			'get_ground_vehicle' => [ $this, 'getGroundVehicle' ],
-			'get_manufacturer' => [ $this, 'getManufacturer' ],
-			'get_comm_link_metadata' => [ $this, 'getCommLinkMetadata' ],
-			'get_starsystem' => [ $this, 'getStarsystem' ],
-			'get_celestial_object' => [ $this, 'getCelestialObject' ],
-			'get_galactapedia' => [ $this, 'getGalactapedia' ],
-			'get_weapon_personal' => [ $this, 'getWeaponPersonal' ],
-			'get_char_armor' => [ $this, 'getCharArmor' ],
-			'get_raw' => [ $this, 'getRaw' ],
+			'get_ship' => [$this, 'getShip'],
+			'get_ground_vehicle' => [$this, 'getGroundVehicle'],
+			'get_manufacturer' => [$this, 'getManufacturer'],
+			'get_comm_link_metadata' => [$this, 'getCommLinkMetadata'],
+			'get_starsystem' => [$this, 'getStarsystem'],
+			'get_celestial_object' => [$this, 'getCelestialObject'],
+			'get_galactapedia' => [$this, 'getGalactapedia'],
+			'get_weapon_personal' => [$this, 'getWeaponPersonal'],
+			'get_char_armor' => [$this, 'getCharArmor'],
+			'get_cooler' => [$this, 'getCooler'],
+			'get_power_plant' => [$this, 'getPowerPlant'],
+			'get_quantum_drive' => [$this, 'getQuantumDrive'],
+			'get_shield' => [$this, 'getShield'],
+			'get_raw' => [$this, 'getRaw'],
 		];
 
 		return $this->getEngine()->registerInterface( __DIR__ . '/mw.ext.Apiunto.lua', $lib, [] );
@@ -298,15 +306,103 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 
 		$this->availableIncludes = CharArmorRepository::INCLUDES;
 
-		$repository = new CharArmorRepository( static::$client, [
+		$repository = new CharArmorRepository(static::$client, [
 			self::IDENTIFIER => $params[0],
-			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
-		] );
+			self::QUERY_PARAMS => $this->processArgs($params[1]),
+		]);
 
 		$response = $repository->getCharArmor();
-		$this->writeCachePropertyKey( $repository );
+		$this->writeCachePropertyKey($repository);
 
-		return [ $response ];
+		return [$response];
+	}
+
+	/**
+	 * Requests metadata for a ship cooler
+	 *
+	 * @return array Ship cooler
+	 */
+	public function getCooler(): array
+	{
+		$params = func_get_args();
+
+		$this->availableIncludes = CoolerRepository::INCLUDES;
+
+		$repository = new CoolerRepository(static::$client, [
+			self::IDENTIFIER => $params[0],
+			self::QUERY_PARAMS => $this->processArgs($params[1]),
+		]);
+
+		$response = $repository->getCooler();
+		$this->writeCachePropertyKey($repository);
+
+		return [$response];
+	}
+
+	/**
+	 * Requests metadata for a ship power plant
+	 *
+	 * @return array Ship power plant
+	 */
+	public function getPowerPlant(): array
+	{
+		$params = func_get_args();
+
+		$this->availableIncludes = PowerPlantRepository::INCLUDES;
+
+		$repository = new PowerPlantRepository(static::$client, [
+			self::IDENTIFIER => $params[0],
+			self::QUERY_PARAMS => $this->processArgs($params[1]),
+		]);
+
+		$response = $repository->getPowerPlant();
+		$this->writeCachePropertyKey($repository);
+
+		return [$response];
+	}
+
+	/**
+	 * Requests metadata for a ship quantum drive
+	 *
+	 * @return array Ship quantum drive
+	 */
+	public function getQuantumDrive(): array
+	{
+		$params = func_get_args();
+
+		$this->availableIncludes = QuantumDriveRepository::INCLUDES;
+
+		$repository = new QuantumDriveRepository(static::$client, [
+			self::IDENTIFIER => $params[0],
+			self::QUERY_PARAMS => $this->processArgs($params[1]),
+		]);
+
+		$response = $repository->getQuantumDrive();
+		$this->writeCachePropertyKey($repository);
+
+		return [$response];
+	}
+
+	/**
+	 * Requests metadata for a ship shield
+	 *
+	 * @return array Ship shield
+	 */
+	public function getShield(): array
+	{
+		$params = func_get_args();
+
+		$this->availableIncludes = ShieldRepository::INCLUDES;
+
+		$repository = new ShieldRepository(static::$client, [
+			self::IDENTIFIER => $params[0],
+			self::QUERY_PARAMS => $this->processArgs($params[1]),
+		]);
+
+		$response = $repository->getShield();
+		$this->writeCachePropertyKey($repository);
+
+		return [$response];
 	}
 
 	/**
@@ -317,7 +413,8 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 	 *
 	 * @return array
 	 */
-	public function getRaw(): array {
+	public function getRaw(): array
+	{
 		$params = func_get_args();
 
 		$this->availableIncludes = $params[1]['include'] ?? [];

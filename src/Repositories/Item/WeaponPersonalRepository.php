@@ -19,12 +19,15 @@
 
 declare( strict_types=1 );
 
-namespace MediaWiki\Extension\Apiunto\Repositories;
+namespace MediaWiki\Extension\Apiunto\Repositories\Item;
+
+use MediaWiki\Extension\Apiunto\Repositories\AbstractRepository;
 
 /**
  * Star Citizen Manufacturer data
  */
-class WeaponPersonalRepository extends AbstractRepository {
+final class WeaponPersonalRepository extends AbstractRepository
+{
 	/**
 	 * Available includes on the api
 	 */
