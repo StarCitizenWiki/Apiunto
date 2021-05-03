@@ -13,6 +13,7 @@ final class QuantumDriveRepository extends AbstractRepository
 	 */
 	public const INCLUDES = [
 		'shops',
+		'shops.items',
 	];
 
 	public const API_ENDPOINT = 'api/ship-items/quantum-drives';

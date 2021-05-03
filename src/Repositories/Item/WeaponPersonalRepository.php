@@ -33,6 +33,12 @@ final class WeaponPersonalRepository extends AbstractRepository
 	 */
 	public const INCLUDES = [
 		'modes',
+		'shops',
+		'shops.items',
+		'modes',
+		'damages',
+		'attachments',
+		'attachment_ports',
 	];
 
 	public const API_ENDPOINT = 'api/weapons/personal';

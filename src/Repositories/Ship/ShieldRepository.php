@@ -13,6 +13,7 @@ final class ShieldRepository extends AbstractRepository
 	 */
 	public const INCLUDES = [
 		'shops',
+		'shops.items',
 	];
 
 	public const API_ENDPOINT = 'api/ship-items/shields';
