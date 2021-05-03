@@ -38,7 +38,7 @@ final class WeaponPersonalRepository extends AbstractRepository
 		'modes',
 		'damages',
 		'attachments',
-		'attachment_ports',
+		'attachmentPorts',
 	];
 
 	public const API_ENDPOINT = 'api/weapons/personal';
