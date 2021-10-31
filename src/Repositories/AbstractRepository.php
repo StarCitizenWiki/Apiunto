@@ -22,7 +22,7 @@ declare( strict_types=1 );
 namespace MediaWiki\Extension\Apiunto\Repositories;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\GuzzleException;
 use MediaWiki\Extension\Apiunto\Scribunto_ApiuntoLuaLibrary;
@@ -86,7 +86,7 @@ abstract class AbstractRepository {
 				'error' => 500,
 				'message' => 'Could not connect to Api',
 			] );
-		} catch ( ClientException $e ) {
+		} catch ( BadResponseException $e ) {
 			return $this->responseFromException( $e );
 		}
 
