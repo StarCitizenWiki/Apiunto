@@ -9,7 +9,7 @@
 	"license-name": "MIT",
 	"type": "other",
 	"requires": {
-		"MediaWiki": ">= 1.35.0",
+		"MediaWiki": ">= 1.39.0",
 		"extensions": {
 			"Scribunto": "*"
 		},
@@ -60,7 +60,16 @@
 			}
 		}
 	},
+	"HookHandlers": {
+		"PurgeHooks": {
+			"class": "MediaWiki\\Extension\\Apiunto\\Hooks\\PurgeHooks",
+			"services": [
+				"DBLoadBalancer"
+			]
+		}
+	},
 	"Hooks": {
+		"ArticlePurge": "PurgeHooks",
 		"ScribuntoExternalLibraries": "MediaWiki\\Extension\\Apiunto\\Hooks\\ScribuntoHooks::onScribuntoExternalLibraries"
 	},
 	"manifest_version": 2
