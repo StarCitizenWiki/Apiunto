@@ -25,13 +25,13 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\GuzzleException;
+use JsonException;
 use MediaWiki\Extension\Apiunto\Scribunto_ApiuntoLuaLibrary;
 use MediaWiki\MediaWikiServices;
 use ObjectCache;
 
 abstract class AbstractRepository {
 	public const API_ENDPOINT = '';
-	public const LOCALE = 'locale';
 
 	/**
 	 * @var Client
@@ -70,18 +70,11 @@ abstract class AbstractRepository {
 	}
 
 	/**
-	 * Check if the cache was written
-	 *
-	 * @return bool
-	 */
-	public function getCacheWritten(): bool {
-		return $this->cacheWritten;
-	}
-
-	/**
 	 * Perform the request
 	 *
 	 * @return string
+	 * @throws GuzzleException
+	 * @throws JsonException
 	 */
 	protected function request(): string {
 		if ( ObjectCache::getLocalClusterInstance()->get( $this->makeCacheKey() ) !== false ) {
@@ -102,10 +95,10 @@ abstract class AbstractRepository {
 				]
 			);
 		} catch ( ConnectException $e ) {
-			return \GuzzleHttp\json_encode( [
+			return json_encode( [
 				'error' => 500,
 				'message' => 'Could not connect to Api',
-			] );
+			], JSON_THROW_ON_ERROR );
 		} catch ( BadResponseException $e ) {
 			return $this->responseFromException( $e );
 		}

@@ -1,13 +1,12 @@
 <?php
 
-declare(strict_types=1);
+declare( strict_types=1 );
 
 namespace MediaWiki\Extension\Apiunto\Repositories\Ship;
 
 use MediaWiki\Extension\Apiunto\Repositories\AbstractRepository;
 
-final class PowerPlantRepository extends AbstractRepository
-{
+final class PowerPlantRepository extends AbstractRepository {
 	/**
 	 * Available includes on the api
 	 */
@@ -24,8 +23,7 @@ final class PowerPlantRepository extends AbstractRepository
 	 *
 	 * @return string JSON data
 	 */
-	public function getPowerPlant(): string
-	{
+	public function getPowerPlant(): string {
 		return $this->request();
 	}
 }

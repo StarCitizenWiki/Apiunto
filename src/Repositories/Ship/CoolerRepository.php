@@ -1,13 +1,12 @@
 <?php
 
-declare(strict_types=1);
+declare( strict_types=1 );
 
 namespace MediaWiki\Extension\Apiunto\Repositories\Ship;
 
 use MediaWiki\Extension\Apiunto\Repositories\AbstractRepository;
 
-final class CoolerRepository extends AbstractRepository
-{
+final class CoolerRepository extends AbstractRepository {
 	/**
 	 * Available includes on the api
 	 */
@@ -24,8 +23,7 @@ final class CoolerRepository extends AbstractRepository
 	 *
 	 * @return string JSON data
 	 */
-	public function getCooler(): string
-	{
+	public function getCooler(): string {
 		return $this->request();
 	}
 }

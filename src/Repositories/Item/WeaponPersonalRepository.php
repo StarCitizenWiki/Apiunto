@@ -26,8 +26,7 @@ use MediaWiki\Extension\Apiunto\Repositories\AbstractRepository;
 /**
  * Star Citizen Manufacturer data
  */
-final class WeaponPersonalRepository extends AbstractRepository
-{
+final class WeaponPersonalRepository extends AbstractRepository {
 	/**
 	 * Available includes on the api
 	 */

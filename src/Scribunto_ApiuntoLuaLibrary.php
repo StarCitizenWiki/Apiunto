@@ -109,20 +109,20 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 	 */
 	public function register(): array {
 		$lib = [
-			'get_ship' => [$this, 'getShip'],
-			'get_ground_vehicle' => [$this, 'getGroundVehicle'],
-			'get_manufacturer' => [$this, 'getManufacturer'],
-			'get_comm_link_metadata' => [$this, 'getCommLinkMetadata'],
-			'get_starsystem' => [$this, 'getStarsystem'],
-			'get_celestial_object' => [$this, 'getCelestialObject'],
-			'get_galactapedia' => [$this, 'getGalactapedia'],
-			'get_weapon_personal' => [$this, 'getWeaponPersonal'],
-			'get_char_armor' => [$this, 'getCharArmor'],
-			'get_cooler' => [$this, 'getCooler'],
-			'get_power_plant' => [$this, 'getPowerPlant'],
-			'get_quantum_drive' => [$this, 'getQuantumDrive'],
-			'get_shield' => [$this, 'getShield'],
-			'get_raw' => [$this, 'getRaw'],
+			'get_ship' => [ $this, 'getShip' ],
+			'get_ground_vehicle' => [ $this, 'getGroundVehicle' ],
+			'get_manufacturer' => [ $this, 'getManufacturer' ],
+			'get_comm_link_metadata' => [ $this, 'getCommLinkMetadata' ],
+			'get_starsystem' => [ $this, 'getStarsystem' ],
+			'get_celestial_object' => [ $this, 'getCelestialObject' ],
+			'get_galactapedia' => [ $this, 'getGalactapedia' ],
+			'get_weapon_personal' => [ $this, 'getWeaponPersonal' ],
+			'get_char_armor' => [ $this, 'getCharArmor' ],
+			'get_cooler' => [ $this, 'getCooler' ],
+			'get_power_plant' => [ $this, 'getPowerPlant' ],
+			'get_quantum_drive' => [ $this, 'getQuantumDrive' ],
+			'get_shield' => [ $this, 'getShield' ],
+			'get_raw' => [ $this, 'getRaw' ],
 		];
 
 		return $this->getEngine()->registerInterface( __DIR__ . '/mw.ext.Apiunto.lua', $lib, [] );
@@ -306,15 +306,15 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 
 		$this->availableIncludes = CharArmorRepository::INCLUDES;
 
-		$repository = new CharArmorRepository(static::$client, [
+		$repository = new CharArmorRepository( static::$client, [
 			self::IDENTIFIER => $params[0],
-			self::QUERY_PARAMS => $this->processArgs($params[1]),
-		]);
+			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
+		] );
 
 		$response = $repository->getCharArmor();
-		$this->writeCachePropertyKey($repository);
+		$this->writeCachePropertyKey( $repository );
 
-		return [$response];
+		return [ $response ];
 	}
 
 	/**
@@ -322,21 +322,20 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 	 *
 	 * @return array Ship cooler
 	 */
-	public function getCooler(): array
-	{
+	public function getCooler(): array {
 		$params = func_get_args();
 
 		$this->availableIncludes = CoolerRepository::INCLUDES;
 
-		$repository = new CoolerRepository(static::$client, [
+		$repository = new CoolerRepository( static::$client, [
 			self::IDENTIFIER => $params[0],
-			self::QUERY_PARAMS => $this->processArgs($params[1]),
-		]);
+			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
+		] );
 
 		$response = $repository->getCooler();
-		$this->writeCachePropertyKey($repository);
+		$this->writeCachePropertyKey( $repository );
 
-		return [$response];
+		return [ $response ];
 	}
 
 	/**
@@ -344,21 +343,20 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 	 *
 	 * @return array Ship power plant
 	 */
-	public function getPowerPlant(): array
-	{
+	public function getPowerPlant(): array {
 		$params = func_get_args();
 
 		$this->availableIncludes = PowerPlantRepository::INCLUDES;
 
-		$repository = new PowerPlantRepository(static::$client, [
+		$repository = new PowerPlantRepository( static::$client, [
 			self::IDENTIFIER => $params[0],
-			self::QUERY_PARAMS => $this->processArgs($params[1]),
-		]);
+			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
+		] );
 
 		$response = $repository->getPowerPlant();
-		$this->writeCachePropertyKey($repository);
+		$this->writeCachePropertyKey( $repository );
 
-		return [$response];
+		return [ $response ];
 	}
 
 	/**
@@ -366,21 +364,20 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 	 *
 	 * @return array Ship quantum drive
 	 */
-	public function getQuantumDrive(): array
-	{
+	public function getQuantumDrive(): array {
 		$params = func_get_args();
 
 		$this->availableIncludes = QuantumDriveRepository::INCLUDES;
 
-		$repository = new QuantumDriveRepository(static::$client, [
+		$repository = new QuantumDriveRepository( static::$client, [
 			self::IDENTIFIER => $params[0],
-			self::QUERY_PARAMS => $this->processArgs($params[1]),
-		]);
+			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
+		] );
 
 		$response = $repository->getQuantumDrive();
-		$this->writeCachePropertyKey($repository);
+		$this->writeCachePropertyKey( $repository );
 
-		return [$response];
+		return [ $response ];
 	}
 
 	/**
@@ -388,21 +385,20 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 	 *
 	 * @return array Ship shield
 	 */
-	public function getShield(): array
-	{
+	public function getShield(): array {
 		$params = func_get_args();
 
 		$this->availableIncludes = ShieldRepository::INCLUDES;
 
-		$repository = new ShieldRepository(static::$client, [
+		$repository = new ShieldRepository( static::$client, [
 			self::IDENTIFIER => $params[0],
-			self::QUERY_PARAMS => $this->processArgs($params[1]),
-		]);
+			self::QUERY_PARAMS => $this->processArgs( $params[1] ),
+		] );
 
 		$response = $repository->getShield();
-		$this->writeCachePropertyKey($repository);
+		$this->writeCachePropertyKey( $repository );
 
-		return [$response];
+		return [ $response ];
 	}
 
 	/**
@@ -413,8 +409,7 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 	 *
 	 * @return array
 	 */
-	public function getRaw(): array
-	{
+	public function getRaw(): array {
 		$params = func_get_args();
 
 		$this->availableIncludes = $params[1]['include'] ?? [];
