@@ -1,13 +1,12 @@
 <?php
 
-declare(strict_types=1);
+declare( strict_types=1 );
 
 namespace MediaWiki\Extension\Apiunto\Repositories\Ship;
 
 use MediaWiki\Extension\Apiunto\Repositories\AbstractRepository;
 
-final class ShieldRepository extends AbstractRepository
-{
+final class ShieldRepository extends AbstractRepository {
 	/**
 	 * Available includes on the api
 	 */
@@ -24,8 +23,7 @@ final class ShieldRepository extends AbstractRepository
 	 *
 	 * @return string JSON data
 	 */
-	public function getShield(): string
-	{
+	public function getShield(): string {
 		return $this->request();
 	}
 }
