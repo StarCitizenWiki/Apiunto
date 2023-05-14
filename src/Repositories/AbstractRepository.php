@@ -65,7 +65,7 @@ abstract class AbstractRepository {
 			$this->options = $options;
 		}
 
-		$this->config = MediaWikiServices::getInstance()->getMainConfig()->get( 'ApiuntoApiVersion' );
+		$this->config = MediaWikiServices::getInstance()->getMainConfig();
 	}
 
 	/**
