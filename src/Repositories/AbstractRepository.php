@@ -101,9 +101,11 @@ abstract class AbstractRepository {
 				wfLogWarning( sprintf( '[Apiunto] Error retrieving API data: %s', $e->getMessage() ) );
 
 				$key = $this->makeCacheKey();
-				if ( ObjectCache::getLocalClusterInstance()->hasKey( $key ) ) {
+				$stale = ObjectCache::getLocalClusterInstance()->get( $key );
+
+				if ( $stale !== false ) {
 					wfLogWarning( sprintf( '[Apiunto] Returning stale content for key %s', $key ) );
-					return ObjectCache::getLocalClusterInstance()->get( $key );
+					return $stale;
 				}
 
 				return false;
