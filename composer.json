@@ -23,7 +23,8 @@
 		],
 		"fix": [
 			"minus-x fix .",
-			"phpcbf src/"
+			"phpcbf src/",
+			"phpcbf maintenance/"
 		]
 	}
 }
