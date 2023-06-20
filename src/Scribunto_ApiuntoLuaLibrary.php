@@ -523,6 +523,8 @@ class Scribunto_ApiuntoLuaLibrary extends Scribunto_LuaLibraryBase {
 	 * @param AbstractRepository $repository
 	 */
 	private function writeCachePropertyKey( AbstractRepository $repository ): void {
+		wfDebugLog( 'Apiunto', 'Writing page prop' );
+
 		$this->getParser()->getOutput()->setPageProperty( 'apiuntocache', $repository->makeCacheKey() );
 	}
 }
