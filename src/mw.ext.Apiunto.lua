@@ -1,121 +1,134 @@
-local libraryUtil = require('libraryUtil')
 local Apiunto = {}
 local php
 
-local function request(method, payload)
-    if payload.identifier == nil then
-        local msg = string.format("identifier is missing in payload '%s'.",
-                method
-        )
-        error(msg, 3)
+
+local function request( payload )
+    if payload.uri == nil then
+        error( "Uri is missing in payload.", 3 )
     end
 
-    if type(payload.args) ~= 'table' then
+    if type( payload.args ) ~= 'table' then
         payload.args = {}
     end
 
-    return php[method](payload.identifier, payload.args)
+    --return payload.uri
+    return php.get_raw( payload.uri, payload.args )
 end
 
-function Apiunto.get_ship(name, args)
-    return request('get_ship', {
-        identifier = name,
+
+function Apiunto.get_ship( name, args )
+    return request( {
+        uri = 'v2/vehicles/' .. name,
         args = args,
-    })
+    } )
 end
 
-function Apiunto.get_ground_vehicle(name, args)
-    return request('get_ground_vehicle', {
-        identifier = name,
+
+function Apiunto.get_ground_vehicle( name, args )
+    return request( {
+        uri = 'v2/vehicles/' .. name,
         args = args,
-    })
+    } )
 end
 
-function Apiunto.get_manufacturer(name, args)
-    return request('get_manufacturer', {
-        identifier = name,
+
+function Apiunto.get_manufacturer( name, args )
+    return request( {
+        uri = 'v2/manufacturers/' .. name,
         args = args,
-    })
+    } )
 end
 
-function Apiunto.get_comm_link_metadata(id, args)
-    return request('get_comm_link_metadata', {
-        identifier = id,
+
+function Apiunto.get_comm_link_metadata( id, args )
+    return request( {
+        uri = 'v2/comm-links/' .. id,
         args = args,
-    })
+    } )
 end
 
-function Apiunto.get_starsystem(id, args)
-    return request('get_starsystem', {
-        identifier = id,
+
+function Apiunto.get_starsystem( id, args )
+    return request( {
+        uri = 'v2/starsystems/' .. id,
         args = args,
-    })
+    } )
 end
 
-function Apiunto.get_celestial_object(id, args)
-    return request('get_celestial_object', {
-        identifier = id,
+
+function Apiunto.get_celestial_object( id, args )
+    return request( {
+        uri = 'v2/celestial-objects/' .. id,
         args = args,
-    })
+    } )
 end
 
-function Apiunto.get_galactapedia(id, args)
-    return request('get_galactapedia', {
-        identifier = id,
+
+function Apiunto.get_galactapedia( id, args )
+    return request( {
+        uri = 'v2/galactapedia/' .. id,
         args = args,
-    })
+    } )
 end
 
-function Apiunto.get_weapon_personal(name, args)
-    return request('get_weapon_personal', {
-        identifier = name,
+
+function Apiunto.get_weapon_personal( name, args )
+    return request( {
+        uri = 'v2/weapons/' .. name,
         args = args,
-    })
+    } )
 end
 
-function Apiunto.get_char_armor(name, args)
-    return request('get_char_armor', {
-        identifier = name,
+
+function Apiunto.get_char_armor( name, args )
+    return request( {
+        uri = 'v2/armor' .. name,
         args = args,
-    })
+    } )
 end
 
-function Apiunto.get_cooler(name, args)
-    return request('get_cooler', {
-        identifier = name,
+
+function Apiunto.get_cooler( name, args )
+    return request( {
+        uri = 'v2/vehicle-items/' .. name,
         args = args,
-    })
+    } )
 end
 
-function Apiunto.get_power_plant(name, args)
-    return request('get_power_plant', {
-        identifier = name,
+
+function Apiunto.get_power_plant( name, args )
+    return request( {
+        uri = 'v2/vehicle-items/' .. name,
         args = args,
-    })
+    } )
 end
 
-function Apiunto.get_quantum_drive(name, args)
-    return request('get_quantum_drive', {
-        identifier = name,
+
+function Apiunto.get_quantum_drive( name, args )
+    return request( {
+        uri = 'v2/vehicle-items/' .. name,
         args = args,
-    })
+    } )
 end
 
-function Apiunto.get_shield(name, args)
-    return request('get_shield', {
-        identifier = name,
+
+function Apiunto.get_shield( name, args )
+    return request( {
+        uri = 'v2/vehicle-items/' .. name,
         args = args,
-    })
+    } )
 end
 
-function Apiunto.get_raw(uri, args)
-    return request('get_raw', {
-        identifier = uri,
+
+function Apiunto.get_raw( uri, args )
+    return request( {
+        uri = uri,
         args = args,
-    })
+    } )
 end
 
-function Apiunto.setupInterface(options)
+
+function Apiunto.setupInterface( options )
     -- Boilerplate
     Apiunto.setupInterface = nil
     php = mw_interface
@@ -126,15 +139,8 @@ function Apiunto.setupInterface(options)
     mw.ext = mw.ext or {}
     mw.ext.Apiunto = Apiunto
 
-    package.loaded['mw.ext.Apiunto'] = Apiunto
+    package.loaded[ 'mw.ext.Apiunto' ] = Apiunto
 end
 
-function getLocale(locale)
-    if locale == nil then
-        return ''
-    else
-        return tostring(locale)
-    end
-end
 
 return Apiunto

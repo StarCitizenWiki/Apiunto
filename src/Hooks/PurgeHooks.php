@@ -21,65 +21,38 @@ declare( strict_types=1 );
 
 namespace MediaWiki\Extension\Apiunto\Hooks;
 
+use MediaWiki\Extension\Apiunto\Repositories\AbstractRepository;
+use MediaWiki\MediaWikiServices;
 use MediaWiki\Page\Hook\ArticlePurgeHook;
 use ObjectCache;
-use Wikimedia\Rdbms\ILoadBalancer;
 
 class PurgeHooks implements ArticlePurgeHook {
-
-	/**
-	 * @var ILoadBalancer
-	 */
-	private $loadBalancer;
-
-	/**
-	 * PurgeHooks constructor.
-	 *
-	 * @param ILoadBalancer $loadBalancer
-	 */
-	public function __construct( ILoadBalancer $loadBalancer ) {
-		$this->loadBalancer = $loadBalancer;
-	}
-
 	/**
 	 * @inheritDoc
 	 */
-	public function onArticlePurge( $wikiPage ) {
+	public function onArticlePurge( $wikiPage ): void {
+		wfDebugLog( 'Apiunto', 'Running Purge Hook' );
+
 		if ( $wikiPage->getTitle() === null ) {
 			return;
 		}
 
-		$db = $this->loadBalancer->getConnection( $this->loadBalancer->getReaderIndex() );
-
-		$res = $db->select(
-			'page_props',
-			[
-				'pp_value',
-			],
-			[
-				'pp_page' => $wikiPage->getTitle()->getArticleID(),
-				'pp_propname' => 'apiuntocache',
-			],
-			__METHOD__
+		$key = MediaWikiServices::getInstance()->getPageProps()->getProperties(
+			$wikiPage,
+			AbstractRepository::PROP_KEY
 		);
 
-		if ( $res->numRows() === 0 ) {
+		if ( empty( $key ) ) {
+			wfDebugLog( 'Apiunto', sprintf( 'No "%s" cache key found.', AbstractRepository::PROP_KEY ) );
 			return;
 		}
 
-		$row = $res->fetchRow();
-		if ( $row === false || !isset( $row['pp_value'] ) ) {
-			return;
-		}
+		$key = array_shift( $key );
 
-		$this->loadBalancer->getConnection( $this->loadBalancer->getWriterIndex() )->delete(
-			'page_props',
-			[
-				'pp_page' => $wikiPage->getTitle()->getArticleID(),
-				'pp_propname' => 'apiuntocache',
-			]
-		);
+		wfDebugLog( 'Apiunto', sprintf( 'Deleting cache key %s', $key ) );
 
-		ObjectCache::getLocalClusterInstance()->delete( $row['pp_value'] );
+		$success = ObjectCache::getLocalClusterInstance()->delete( $key );
+
+		wfDebugLog( 'Apiunto', sprintf( 'Cache deletion was%s successful.', !$success ?: ' not' ) );
 	}
 }

@@ -21,9 +21,9 @@ declare( strict_types=1 );
 
 namespace MediaWiki\Extension\Apiunto\Repositories;
 
+use Config;
+use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
-use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 use MediaWiki\Extension\Apiunto\Scribunto_ApiuntoLuaLibrary;
@@ -33,10 +33,12 @@ use ObjectCache;
 abstract class AbstractRepository {
 	public const API_ENDPOINT = '';
 
+	public const PROP_KEY = 'apiuntocache';
+
 	/**
 	 * @var Client
 	 */
-	protected $client;
+	protected Client $client;
 
 	/**
 	 * @var array|null
@@ -44,9 +46,9 @@ abstract class AbstractRepository {
 	protected $options;
 
 	/**
-	 * @var bool
+	 * @var Config
 	 */
-	private $cacheWritten = false;
+	private Config $config;
 
 	/**
 	 * AbstractRepository constructor.
@@ -60,6 +62,8 @@ abstract class AbstractRepository {
 		if ( is_array( $options ) ) {
 			$this->options = $options;
 		}
+
+		$this->config = MediaWikiServices::getInstance()->getMainConfig();
 	}
 
 	/**
@@ -73,53 +77,62 @@ abstract class AbstractRepository {
 	 * Perform the request
 	 *
 	 * @return string
-	 * @throws GuzzleException
-	 * @throws JsonException
+	 * @throws JsonException|GuzzleException
 	 */
 	protected function request(): string {
-		if ( ObjectCache::getLocalClusterInstance()->get( $this->makeCacheKey() ) !== false ) {
-			return ObjectCache::getLocalClusterInstance()->get( $this->makeCacheKey() );
+		$callback = function () {
+			wfDebugLog( 'Apiunto', 'Retrieving Data from API' );
+
+			try {
+				$url = sprintf(
+					'%s/%s',
+					static::API_ENDPOINT,
+					$this->options[ Scribunto_ApiuntoLuaLibrary::IDENTIFIER ]
+				);
+
+				$response = $this->client->get(
+					$url,
+					[
+						'query' => $this->options[ Scribunto_ApiuntoLuaLibrary::QUERY_PARAMS ]
+					]
+				);
+			} catch ( GuzzleException | Exception $e ) {
+				wfLogWarning( sprintf( '[Apiunto] Error retrieving API data: %s', $e->getMessage() ) );
+				wfDebugLog( 'Apiunto', sprintf( 'Error retrieving API data: %s', $e->getMessage() ) );
+
+				$key = $this->makeCacheKey();
+				$stale = ObjectCache::getLocalClusterInstance()->get( $key );
+
+				if ( $stale !== false ) {
+					wfLogWarning( sprintf( '[Apiunto] Returning stale content for key %s', $key ) );
+					wfDebugLog( 'Apiunto', sprintf( 'Returning stale content for key %s', $key ) );
+					return $stale;
+				}
+
+				return false;
+			}
+
+			return (string)$response->getBody();
+		};
+
+		if ( $this->config->get( 'ApiuntoEnableCache' ) !== true ) {
+			wfDebugLog( 'Apiunto', 'Cache is disabled' );
+			return $callback();
 		}
 
-		try {
-			$url = sprintf(
-				'%s/%s',
-				static::API_ENDPOINT,
-				$this->options[Scribunto_ApiuntoLuaLibrary::IDENTIFIER]
-			);
+		$expires = $this->config->get( 'ApiuntoCacheTimes' );
 
-			$response = $this->client->get(
-				$url,
-				[
-					'query' => $this->options[Scribunto_ApiuntoLuaLibrary::QUERY_PARAMS]
-				]
-			);
-		} catch ( ConnectException $e ) {
-			return json_encode( [
-				'error' => 500,
-				'message' => 'Could not connect to Api',
-			], JSON_THROW_ON_ERROR );
-		} catch ( BadResponseException $e ) {
-			return $this->responseFromException( $e );
+		$value = ObjectCache::getLocalClusterInstance()->getWithSetCallback(
+			$this->makeCacheKey(),
+			$expires[ str_replace( 'api/', '', self::API_ENDPOINT ) ] ?? $expires[ 'Default' ],
+			$callback
+		);
+
+		if ( $value === false ) {
+			return 'Could not retrieve API Data';
 		}
 
-		$content = (string)$response->getBody();
-
-		$this->cacheWritten = $this->writeCache( $content );
-
-		return (string)$response->getBody();
-	}
-
-	/**
-	 * @param GuzzleException|null $exception
-	 * @return mixed|string
-	 */
-	protected function responseFromException( ?GuzzleException $exception ) {
-		if ( $exception === null || $exception->getResponse() === null ) {
-			return 'Response is empty';
-		}
-
-		return $exception->getResponse()->getBody()->getContents();
+		return $value;
 	}
 
 	/**
@@ -128,40 +141,16 @@ abstract class AbstractRepository {
 	 * @return string
 	 */
 	public function makeCacheKey(): string {
-		return ObjectCache::getLocalClusterInstance()->makeGlobalKey(
-			'apiunto',
-			MediaWikiServices::getInstance()->getMainConfig()->get( 'ApiuntoApiVersion' ),
+		$key = ObjectCache::getLocalClusterInstance()->makeKey(
+			'ext',
+			self::PROP_KEY,
 			explode( '/', static::API_ENDPOINT )[1] ?? static::API_ENDPOINT,
-			md5(
-				implode(
-					':',
-					array_merge(
-						(array)( $this->options[Scribunto_ApiuntoLuaLibrary::IDENTIFIER] ),
-						(array)( $this->options[Scribunto_ApiuntoLuaLibrary::QUERY_PARAMS] ),
-					)
-				)
-			)
+			...(array)( $this->options[ Scribunto_ApiuntoLuaLibrary::IDENTIFIER ] ),
+			...array_values( $this->options[ Scribunto_ApiuntoLuaLibrary::QUERY_PARAMS ] ),
 		);
+
+		wfDebugLog( 'Apiunto', sprintf( 'Key is %s', $key ) );
+
+		return $key;
 	}
-
-	/**
-	 * Writes the response to cache
-	 *
-	 * @param $content
-	 * @return bool
-	 */
-	protected function writeCache( $content ): bool {
-		if ( MediaWikiServices::getInstance()->getMainConfig()->get( 'ApiuntoEnableCache' ) !== true ) {
-			return false;
-		}
-
-		$expiries = MediaWikiServices::getInstance()->getMainConfig()->get( 'ApiuntoCacheTimes' );
-
-		return ObjectCache::getLocalClusterInstance()->set(
-			$this->makeCacheKey(),
-			$content,
-			$expiries[str_replace( 'api/', '', self::API_ENDPOINT )] ?? $expiries['Default'],
-		);
-	}
-
 }
