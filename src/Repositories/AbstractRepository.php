@@ -132,7 +132,7 @@ abstract class AbstractRepository {
 			return 'Could not retrieve API Data';
 		}
 
-		return $value;
+		return (string)$value;
 	}
 
 	/**
